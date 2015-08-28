@@ -130,6 +130,14 @@ echo "883200" > /sys/kernel/cpufreq_hardlimit/touchboost_lo_freq
 echo "200000000" > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo "600000000" > /sys/class/kgsl/kgsl-3d0/max_gpuclk
 
+#IntelliThermal
+echo "80" > /sys/module/msm_thermal/parameters/limit_temp_degC
+echo "85" > /sys/module/msm_thermal/parameters/core_limit_temp_degC
+echo "250" > /sys/module/msm_thermal/parameters/poll_ms
+echo "1" > /sys/module/msm_thermal/core_control/enabled
+echo "15" > /sys/module/msm_thermal/parameters/freq_control_mask
+echo "14" > /sys/module/msm_thermal/parameters/core_control_mask
+
 sync
 
 #Faux Sound Headphones
