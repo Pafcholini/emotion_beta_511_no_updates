@@ -131,12 +131,11 @@ echo "600000000" > /sys/class/kgsl/kgsl-3d0/max_gpuclk
 
 sync
 
-#Faux Sound Headphones
-if [ ! -f /data/.emotionkernel/gpl_headphone_gain ]; then
-	echo "0" > /data/.emotionkernel/gpl_headphone_gain
-	echo "1" > /data/.emotionkernel/check
-	echo "244" > /data/.emotionkernel/gpl_headphone_pa_gain
-fi
+#Set fauxsound defaults.
+echo "0" > /sys/kernel/sound_control_3/gpl_sound_control_locked
+echo "0 0" > /sys/kernel/sound_control_3/gpl_headphone_gain
+echo "0 0" > /sys/kernel/sound_control_3/gpl_speaker_gain
+echo "1" > /sys/kernel/sound_control_3/gpl_sound_control_locked
 
 #Voltage Control
 if [ ! -f /data/.emotionkernel/volt_prof ]; then
