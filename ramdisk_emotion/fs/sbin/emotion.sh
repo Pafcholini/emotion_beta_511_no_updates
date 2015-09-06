@@ -124,7 +124,7 @@ chmod 444 /dev/frandom
 sync
 
 #Set default values on boot
-echo "2649600" > /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+echo "2649600" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 echo "1" > /sys/kernel/dyn_fsync/Dyn_fsync_active
 echo "200000000" > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo "600000000" > /sys/class/kgsl/kgsl-3d0/max_gpuclk
