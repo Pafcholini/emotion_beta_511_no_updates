@@ -53,7 +53,7 @@ cat << CTAG
 		default:`cat /proc/sys/net/ipv4/tcp_max_tw_buckets`,
 		action:"generic /proc/sys/net/ipv4/tcp_max_tw_buckets",
 		values:{
-			`TCPMTB='4096:"OFF", 16384:"ON"'
+			`TCPMTB='2048:"OFF", 16384:"ON"'
 			echo $TCPMTB`
 		}
 	}},
