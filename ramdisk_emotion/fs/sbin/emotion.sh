@@ -10,6 +10,13 @@ mount -o remount,rw -t auto /
 mount -o remount,rw -t auto /system
 mount -t rootfs -o remount,rw rootfs
 
+# Drop thermal very low to prevent overheating - we'll reset it when we're done.
+stop thermal-engine
+echo "1" > /sys/module/msm_thermal/parameters/enabled
+echo "0" > /sys/module/msm_thermal/core_control/enabled
+echo "60" > /sys/module/msm_thermal/parameters/limit_temp_degC
+echo "65" > /sys/module/msm_thermal/parameters/core_limit_temp_degC
+
 if [ -f $BBX ]; then
 	chown 0:2000 $BBX
 	chmod 0755 $BBX
@@ -109,13 +116,15 @@ fi
 	pm disable com.samsung.knox.rcp.components	
 	pm disable com.samsung.android.securitylogagent
 
-# Init.d
-if [ ! -d "/system/etc/init.d" ] ; then
-mount -o remount,rw -t auto /system
-mkdir /system/etc/init.d
-chmod 0755 /system/etc/init.d/*
-mount -o remount,ro -t auto /system
-fi
+# init.d
+chmod 755 /system/etc/init.d/ -R
+if [ ! -d /system/etc/init.d ]; then
+mkdir -p /system/etc/init.d/;
+chown -R root.root /system/etc/init.d;
+chmod 777 /system/etc/init.d/;
+else
+/sbin/busybox run-parts /system/etc/init.d
+fi;
 
 # frandom permissions
 chmod 444 /dev/erandom
@@ -161,10 +170,6 @@ if [ ! -f /data/.emotionkernel/bck_prof ]; then
 	cp -f /res/synapse/files/wake_prof /data/.emotionkernel/wake_prof
 fi
 
-stop thermal-engine
-/system/xbin/busybox run-parts /system/etc/init.d
-start thermal-engine
-
 # Synapse
 mount -t rootfs -o remount,rw rootfs
 ln -fs /res/synapse/uci /sbin/uci
@@ -172,6 +177,13 @@ ln -fs /res/synapse/uci /sbin/uci
 mount -t rootfs -o remount,ro rootfs
 
 sync
+
+# Disable intellithermal after boot
+echo "0" > /sys/module/msm_thermal/parameters/enabled
+echo "0" > /sys/module/msm_thermal/core_control/enabled
+echo "80" > /sys/module/msm_thermal/parameters/limit_temp_degC
+echo "85" > /sys/module/msm_thermal/parameters/core_limit_temp_degC
+start thermal-engine
 
 #Fin
 mount -t rootfs -o remount,ro rootfs
