@@ -1,9 +1,10 @@
 #!/sbin/sh
-if [ ! -f /data/app/com.af.synapse-*.apk ]
+if [ ! -f /data/app/com.af.synapse-*/ ]
 then
-    cp /tmp/synapse.apk /data/app/com.af.synapse-1.apk
-    chmod 644 /data/app/com.af.synapse-1.apk
+mkdir /data/app/com.af.synapse-1/
+    cp /tmp/base.apk /data/app/com.af.synapse-1/base.apk
+    chmod 644 /data/app/com.af.synapse-1/base.apk
 fi
-rm -f /tmp/synapse.apk
+rm -f /tmp/base.apk
 
 exit 0
