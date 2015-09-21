@@ -216,6 +216,18 @@ cat << CTAG
 			echo $CDASECR`
 		}
 	}},
+	{ SPane:{
+		title:"Disable ipv6",
+	}},
+	{ SOptionList:{
+		title:"disable_ipv6. Default ON",
+		default:`cat /proc/sys/net/ipv6/conf/wlan0/disable_ipv6`,
+		action:"ipv6 /proc/sys/net/ipv6/conf/wlan0/disable_ipv6",
+		values:{
+			`IPV6D='1:"OFF", 0:"ON"'
+			echo $IPV6D`
+		}
+	}},
     ]
 }
 CTAG

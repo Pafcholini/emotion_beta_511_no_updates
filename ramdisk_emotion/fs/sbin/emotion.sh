@@ -143,6 +143,9 @@ done
 
 sync
 
+# ipv6 disable
+echo "0" > /data/.emotionkernel/disable_ipv6
+
 #Set fauxsound defaults.
 echo "0" > /sys/kernel/sound_control_3/gpl_sound_control_locked
 echo "0 0" > /sys/kernel/sound_control_3/gpl_headphone_gain
