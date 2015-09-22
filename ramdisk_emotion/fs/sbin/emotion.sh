@@ -77,6 +77,27 @@ sync
 #SSWAP to 1.2gb
 /res/ext/sswap.sh
 
+# Fix synapse database permissions.
+if [ -d /data/data/com.af.synapse ]; then
+SYNAPSE_OWNER=`ls -ld /data/data/com.af.synapse | awk 'NR==1 {print $3}'`
+if [ ! -z $SYNAPSE_OWNER ]; then
+/sbin/busybox chown "$SYNAPSE_OWNER"."$SYNAPSE_OWNER" /data/data/com.af.synapse/databases -R
+fi;
+chmod 771 /data/data/com.af.synapse/databases
+chmod 660 /data/data/com.af.synapse/databases/actionValueStore
+chmod 600 /data/data/com.af.synapse/databases/actionValueStore-journal
+fi;
+
+# init.d
+chmod 755 /system/etc/init.d/ -R
+if [ ! -d /system/etc/init.d ]; then
+mkdir -p /system/etc/init.d/;
+chown -R root.root /system/etc/init.d;
+chmod 777 /system/etc/init.d/;
+else
+/sbin/busybox run-parts /system/etc/init.d
+fi;
+
 # Execute setenforce to permissive (workaround as it is already permissive that time)
 /system/bin/setenforce 0
 
@@ -114,16 +135,6 @@ fi
 	pm disable com.sec.knox.knoxsetupwizardclient
 	pm disable com.samsung.knox.rcp.components	
 	pm disable com.samsung.android.securitylogagent
-
-# init.d
-chmod 755 /system/etc/init.d/ -R
-if [ ! -d /system/etc/init.d ]; then
-mkdir -p /system/etc/init.d/;
-chown -R root.root /system/etc/init.d;
-chmod 777 /system/etc/init.d/;
-else
-/sbin/busybox run-parts /system/etc/init.d
-fi;
 
 # frandom permissions
 chmod 444 /dev/erandom
