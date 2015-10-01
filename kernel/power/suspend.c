@@ -75,16 +75,6 @@ void freeze_wake(void)
 }
 EXPORT_SYMBOL_GPL(freeze_wake);
 
-static bool valid_state(suspend_state_t state)
-{
-	/*
-	 * PM_SUSPEND_STANDBY and PM_SUSPEND_MEM states need low level
-	 * support and need to be valid to the low level
-	 * implementation, no valid callback implies that none are valid.
-	 */
-	return suspend_ops && suspend_ops->valid && suspend_ops->valid(state);
-}
-
 /**
  * suspend_set_ops - Set the global suspend method table.
  * @ops: Suspend operations to use.
@@ -96,6 +86,30 @@ void suspend_set_ops(const struct platform_suspend_ops *ops)
 	unlock_system_sleep();
 }
 EXPORT_SYMBOL_GPL(suspend_set_ops);
+
+bool valid_state(suspend_state_t state)
+{
+	if (state == PM_SUSPEND_FREEZE) {
+#ifdef CONFIG_PM_DEBUG
+		if (pm_test_level != TEST_NONE &&
+		    pm_test_level != TEST_FREEZER &&
+		    pm_test_level != TEST_DEVICES &&
+		    pm_test_level != TEST_PLATFORM) {
+			printk(KERN_WARNING "Unsupported pm_test mode for "
+					"freeze state, please choose "
+					"none/freezer/devices/platform.\n");
+			return false;
+		}
+#endif
+			return true;
+	}
+	/*
+	 * PM_SUSPEND_STANDBY and PM_SUSPEND_MEMORY states need lowlevel
+	 * support and need to be valid to the lowlevel
+	 * implementation, no valid callback implies that none are valid.
+	 */
+	return suspend_ops && suspend_ops->valid && suspend_ops->valid(state);
+}
 
 /**
  * suspend_valid_only_mem - Generic memory-only valid callback.
